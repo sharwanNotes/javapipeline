@@ -4,6 +4,16 @@ pipeline {
     maven 'M2_HOME' 
   }
   stages {
+    stage('Cleanup') {
+      steps {
+        deleteDir()
+      }
+    }
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
     stage('Build') {
       steps {
         sh 'mvn clean package'
@@ -26,4 +36,3 @@ pipeline {
     }
   }
 }
-
