@@ -13,8 +13,7 @@ pipeline {
         }
         stage('build') {
             steps {
-              sh "mvn clean package -DskipTests=true"
-              archive 'target/*.jar'
+                bat 'mvn package'
             }
         }
     }
