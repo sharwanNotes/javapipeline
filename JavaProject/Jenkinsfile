@@ -1,20 +1,42 @@
 pipeline {
     agent any
-    
+    tools{
+     maven 'Maven2'//give the name of the maven that you configured in jenkins
+    }
+
     stages {
-        stage('checkout scm') {
+        stage('Stage') {
             steps {
-                script {
-                    checkout([$class: 'GitSCM',
-                              branches: [[name: '*/master']],
-                              userRemoteConfigs: [[url: 'https://github.com/sharwanNotes/Demo.git']]])
-                }
+             bat "mvn clean"
+                echo 'Build started'
             }
         }
-        stage('build') {
+     stage('Build') {
             steps {
-                bat 'mvn package'
+             bat "mvn install"
+                echo 'Build completed'
             }
+          
+        }
+        stage('Test') {
+            steps {
+             bat "mvn test"
+                echo 'Test completed'
+            }
+          
+        }
+        stage('Deploy'){
+            steps{
+                deploy adapters: [tomcat9(path: '', url: 'http://localhost:8989/')], contextPath: null, war: 'WAR/EAR files : **/*.war'
+                echo 'Deployment completed'
+            }
+             
         }
     }
+      post{
+                success{
+                    echo "Your Application Deployed Successfully";
+                    //archiveArtifacts artifacts: '**/target/*.war'
+                }
+            }
 }
